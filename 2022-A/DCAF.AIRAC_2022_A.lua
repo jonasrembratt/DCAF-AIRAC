@@ -38,7 +38,8 @@ function AIRBASE_INFO:New(icao, country, name)
 end
 
 DCAF.AIRAC.ICAO = {
-    -- Iran, PEG
+    -- PEG - Iran
+    OIBA = AIRBASE_INFO:New("OIBA", country.id.IRAN, AIRBASE.PersianGulf.Abu_Musa_Island_Airport),
     OIBK = AIRBASE_INFO:New("OIBK", country.id.IRAN, AIRBASE.PersianGulf.Kish_International_Airport),
     OIBL = AIRBASE_INFO:New("OIBL", country.id.IRAN, AIRBASE.PersianGulf.Bandar_Lengeh),
     OIBV = AIRBASE_INFO:New("OIBV", country.id.IRAN, AIRBASE.PersianGulf.Lavan_Island_Airport),
@@ -50,14 +51,19 @@ DCAF.AIRAC.ICAO = {
     OISL = AIRBASE_INFO:New("OISL", country.id.IRAN, AIRBASE.PersianGulf.Lar_Airbase),
     OISS = AIRBASE_INFO:New("OISS", country.id.IRAN, AIRBASE.PersianGulf.Shiraz_International_Airport),
     OIZJ = AIRBASE_INFO:New("OIZJ", country.id.IRAN, AIRBASE.PersianGulf.Bandar_e_Jask_airfield),
-    -- UAE, PEG
+    -- PEG - United Arab Emirates (UAE)
     OMAA = AIRBASE_INFO:New("OMAA", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Abu_Dhabi_International_Airport), 
     OMAM = AIRBASE_INFO:New("OMAM", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Al_Dhafra_AB),
     OMDM = AIRBASE_INFO:New("OMDM", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Al_Minhad_AB),
     OMDB = AIRBASE_INFO:New("OMDB", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Dubai_Intl),
     OMLW = AIRBASE_INFO:New("OMLW", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Liwa_Airbase),
-    -- Oman, PEG
+    OMSJ = AIRBASE_INFO:New("OMSJ", country.id.UNITED_ARAB_EMIRATES , AIRBASE.PersianGulf.Sharjah_Intl),
+    -- PEG - Oman
     OOKB = AIRBASE_INFO:New("OOKB", country.id.OMAN , AIRBASE.PersianGulf.Khasab),
+
+    -- NTR - Nevada Test and Training Range
+    KLAS = AIRBASE_INFO:New("KLAS", country.id.USA, AIRBASE.Nevada.McCarran_International_Airport ),
+    KLSV = AIRBASE_INFO:New("KLSV", country.id.USA, AIRBASE.Nevada.Nellis_AFB ),
 }
 
 function DCAF.AIRAC.ICAO:GetAirbaseICAO(airbase)
@@ -212,6 +218,12 @@ function DCAF.NAVAID:NewVORTAC(map, name, frequency, channel, mode, coordinate)
 end
 
 function DCAF.NAVAID:AirTurnpoint(speedKmph, altitudeMeters, tasks)
+    if not isNumber(speedKmph) and isNumber(self.SpeedKt) then
+        speedKmph = Knots(self.speedKt) end
+
+    if not isNumber(altitudeMeters) and isNumber(self.AltFt) then
+        altitudeMeters = Feet(self.AltFt) end
+           
     local waypoint = self.Coordinate:WaypointAirTurningPoint(
         COORDINATE.WaypointAltType.BARO,
         speedKmph,
@@ -219,6 +231,8 @@ function DCAF.NAVAID:AirTurnpoint(speedKmph, altitudeMeters, tasks)
         self.Name)
     if isNumber(altitudeMeters) then
         waypoint.alt = altitudeMeters
+    else
+        waypoint.alt = nil
     end
     return waypoint
 end
@@ -272,7 +286,6 @@ DCAF.AIRAC.NAVAIDS = {
     RETEL = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "RETEL", COORDINATE:NewFromLLDD(29.03555556, 48.64222222)),
     ROTEL = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ROTEL", COORDINATE:NewFromLLDD(26.83888889, 50.69611111)),
     TUMAK = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "TUMAK", COORDINATE:NewFromLLDD(26.00083333, 52.78694444)),
-    -- ALSAS = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ALSAS", COORDINATE:NewFromLLDD(24.15972222, 59.18305556)),
     ALSAS = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ALSAS", COORDINATE:NewFromLLDD(24.01500000, 59.33194444)),
     DESPI = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "DESPI", COORDINATE:NewFromLLDD(23.83083333, 56.51944444)),
     PUTSO = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "PUTSO", COORDINATE:NewFromLLDD(23.34361100, 56.88944400)),
@@ -288,7 +301,9 @@ DCAF.AIRAC.NAVAIDS = {
     DOH = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "DOH", 114.40, COORDINATE:NewFromLLDD(25.24666667, 51.60888889)),  -- Quatar, Dohar Intl. airport
     FJV = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "FJV", 113.80, COORDINATE:NewFromLLDD(25.10055556, 56.35444444)),  -- UAE, Fujairah intl airport.
     ISR = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "ISR", 117.00, COORDINATE:NewFromLLDD(27.25083333, 60.74305556)),  -- Iran, 230 nm east Bandar Abbas
+    JIR = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "JIR", 276.00, COORDINATE:NewFromLLDD(28.73194444, 57.67194444)),  -- Iran, Jiroft airport
     KHM = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "KHM", 117.10, COORDINATE:NewFromLLDD(26.76277778, 55.90777778)),  -- Iran, Queshm island
+    KIS = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "KIS", 117.40, COORDINATE:NewFromLLDD(26.52500000, 53.96250000)),  -- Iran, Kish isl.
     LAM = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "LAM", 117.00, COORDINATE:NewFromLLDD(27.37305556, 53.18972222)),  -- Iran, 34nm north Lavan isl.
     LAR = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "LAR", 117.90, COORDINATE:NewFromLLDD(27.67472222, 54.41611111)),  -- Iran, Lar airport
     LEN = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "LEN", 114.80, COORDINATE:NewFromLLDD(26.53611111, 54.85111111)),  -- Iran, Bandar Lengeh airport
@@ -298,10 +313,18 @@ DCAF.AIRAC.NAVAIDS = {
     ZDN = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "ZDN", 116.00, COORDINATE:NewFromLLDD(29.47861111, 60.89694444)),  -- Iran, 210nm ESE of Kerman 
     -- Persian Gulf (PEG) - (TACAN/VORTAC)
     BNDX = DCAF.NAVAID:NewTACAN( DCSMAP.PersianGulf, "BND",          78, 'X', COORDINATE:NewFromLLDD(27.21694444, 56.38083333)),    -- Iran, Bandar Abbas Intl.
+    HDR  = DCAF.NAVAID:NewTACAN( DCSMAP.PersianGulf, "HDR",          47, 'X', COORDINATE:NewFromLLDD(27.16055556, 56.17277778)),    -- Iran, Havadarya airport
     MIN  = DCAF.NAVAID:NewTACAN( DCSMAP.PersianGulf, "MIN",          99, 'X', COORDINATE:NewFromLLDD(25.02694444, 55.39555556)),    -- UAE, Al Minhad AFB
     MA   = DCAF.NAVAID:NewVORTAC(DCSMAP.PersianGulf, "MA",   114.9,  96, nil, COORDINATE:NewFromLLDD(24.24666667, 54.54527778)),    -- UAE, Al Dhafra AFB
     OMLW = DCAF.NAVAID:NewVORTAC(DCSMAP.PersianGulf, "OMLW", 117.4, 121, nil, COORDINATE:NewFromLLDD(23.66750000, 53.80361111)),    -- UAE, Liwa AFB
     SYZ1 = DCAF.NAVAID:NewTACAN( DCSMAP.PersianGulf, "SYZ1",         94, 'X', COORDINATE:NewFromLLDD(29.54166667, 52.58861111)),    -- Iran, Shiraz Intl
+
+    -- Nevada Test and Training Range (NTR) - Waypoints
+    BESSY = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "BESSY", COORDINATE:NewFromLLDD(36.17694444, -115.34611111)),
+    HRRLY = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "HRRLY", COORDINATE:NewFromLLDD(35.98944444, -115.34694444)),
+    JOHKR = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "JOHKR", COORDINATE:NewFromLLDD(35.89527778, -115.93833333)),
+    KWYYN = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "KWYYN", COORDINATE:NewFromLLDD(35.86527778, -115.40666667)),
+    RAWKK = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "RAWKK", COORDINATE:NewFromLLDD(35.87388889, -115.55694444)),
 
 --[[
     ??? = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "???", ???.??, COORDINATE:NewFromLLDD(XXX, YYY)),
@@ -315,6 +338,8 @@ DCAF.AIRAC.NAVAIDS = {
 --                                                                        AIR ROUTES 
 -- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-- https://flightcrewguide.com/wiki/rules-regulations/flight-plan/
+
 local DCAF_ROUTE_COUNT = 1
 
 DCAF.AIR_ROUTE = {
@@ -326,8 +351,8 @@ DCAF.AIR_ROUTE = {
 DCAF.AIR_ROUTE_OPTIONS = {
     ClassName = "DCAF.AIR_ROUTE_OPTIONS",
     InvisibleToHostileAI = true,
-    CruiseSpeedKnots = 0,
-    CruiseAltitudeFeet = 0,
+    CruiseSpeedKnots = 400,
+    CruiseAltitudeFeet = 30000,
     SID = true,                        -- #string or #boolean - when set; a SID procedure is inserted into route. Use #string to specify SID or #boolean to auto-select a SID
     STAR = true                        -- #string or #boolean - when set; a STAR procedure is inserted into route. Use #string to specify STAR or #boolean to auto-select a STAR
 }
@@ -352,15 +377,15 @@ local function genericRouteName()
     return "ROUTE-" .. Dump(DCAF_ROUTE_COUNT)
 end
 
-function DCAF.AIR_ROUTE:New(name, route)
+function DCAF.AIR_ROUTE:New(name, route, phase, proc)
     if not isAssignedString(route) then
         error("DCAF.ROUTE:New :: `route` must be assigned string") end
 
     local idents = {}
-    for ident in route:gmatch("%w+") do 
+    for ident in route:gmatch("%S+") do 
         table.insert(idents, ident) 
     end
-    return DCAF.AIR_ROUTE:NewFromNavaids(name, idents)
+    return DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
 end
 
 function DCAF.AIR_ROUTE:NewFromWaypoints(name, waypoints)
@@ -377,7 +402,108 @@ function DCAF.AIR_ROUTE:NewFromWaypoints(name, waypoints)
     return route
 end
 
-function DCAF.AIR_ROUTE:NewFromNavaids(name, idents)
+DCAF.AIR_ROUTE_SPAWNMETHOD = {
+    Air = "air",
+    Hot = "hot",
+    Cold = "cold",
+    Runway = "runway"
+}
+
+function DCAF.AIR_ROUTE_SPAWNMETHOD:IsAny(value)
+    for _, v in pairs(DCAF.AIR_ROUTE_SPAWNMETHOD) do
+        if value == v then
+            return v
+        end
+    end
+end
+
+function DCAF.AIR_ROUTE_SPAWNMETHOD:ResolveMOOSETakeoff(value)
+    if value == DCAF.AIR_ROUTE_SPAWNMETHOD.Cold then
+        return SPAWN.Takeoff.Cold
+
+    elseif DCAF.AIR_ROUTE_SPAWNMETHOD.Hot then
+        return SPAWN.Takeoff.Hot
+
+    elseif DCAF.AIR_ROUTE_SPAWNMETHOD.Runway then
+        return SPAWN.Takeoff.Runway
+
+    elseif DCAF.AIR_ROUTE_SPAWNMETHOD.Air then
+        return SPAWN.Takeoff.Air
+
+    else
+        error("DCAF.AIR_ROUTE_SPAWNMETHOD:ResolveMOOSETakeoff :: cannot resolve value: " .. DumpPretty(value))
+
+    end
+end
+
+AIRAC_IDENT = {
+    ClassName = "AIRAC_IDENT",
+    Name = nil,
+    SpeedKt = nil,
+    AltFt = nil
+}
+
+function AIRAC_IDENT:New(s)
+    if not isAssignedString(s) then
+        error("IDENT:New :: `s` must be assigned string but was: " .. DumpPretty(s)) end
+
+    local items = {}
+    for e in s:gmatch('[^/]+') do
+        table.insert(items, e)
+    end
+    local ident = DCAF.clone(AIRAC_IDENT)
+    ident.Name = items[1]
+    if #items == 1 then
+        return ident end
+
+    local function eatNum(s, start)
+        local starts, ends = string.find(s, "%d+")
+        if starts == nil then
+            return end
+
+        local num = tonumber(string.sub(s, starts, ends))
+        return num, ends+1
+    end
+
+    local item = items[2]
+    local speedKt, alt, altUnit
+    local qualifier = string.sub(item, 1, 1)
+    if qualifier == 'N' then
+        -- speed in knots...
+        local kt, next = eatNum(item, 2)
+        item = string.sub(item, next)
+        ident.SpeedKt = kt
+    elseif qualifier == 'M' then
+        -- speed in MACH...
+        local m, next = eatNum(item, 2)
+        ident.SpeedKt = MachToKnots(m/100)
+        item = string.sub(item, next)
+    end
+    if string.len(item) == 0 then
+        return ident end
+
+    qualifier = string.sub(item, 1, 1)
+    if qualifier == 'F' or qualifier == 'A' then
+        -- altitude in Flight level (feet / 100)...
+        local ft, next = eatNum(item, 2)
+        ident.AltFt = ft * 100
+        item = string.sub(item, next)
+    elseif qualifier == 'S' or qualifier == 'M' then
+        -- altitude in standard metric (meters / 10)...
+        local m, next = eatNum(item, 2)
+        ident.AltFt = UTILS.MetersToFeet(m * 10)
+        item = string.sub(item, next)
+    end
+    return ident
+end
+
+function AIRAC_IDENT:IsRestricted()
+    return isNumber(self.AltFt) or isNumber(self.SpeedKt)
+end
+
+function DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
+-- Debug("nisse - idents: " .. DumpPretty(idents))
+
     if not isAssignedString(name) then
         name = genericRouteName()
     end
@@ -385,13 +511,12 @@ function DCAF.AIR_ROUTE:NewFromNavaids(name, idents)
         error("DCAF.ROUTE:NewFromNavaids :: `idents` must be table (list of navaid identifiers)") end
 
     local departureAirbase, destinationAirbase
-    local function makeEnrouteWaypoint(ident, index)
-        local waypoint
-        local phase = DCAF.AIR_ROUTE_PHASE.Enroute
-        if isClass(ident, DCAF.NAVAID.ClassName) then
-            waypoint = ident:AirTurnpoint()
-        elseif isClass(ident, AIRBASE.ClassName) then
-            local airbase = ident
+    local function makeRouteWaypoint(waypoint, index)
+        local phase = phase or DCAF.AIR_ROUTE_PHASE.Enroute
+        if isClass(waypoint, DCAF.NAVAID.ClassName) then
+            waypoint = waypoint:AirTurnpoint()
+        elseif isClass(waypoint, AIRBASE.ClassName) then
+            local airbase = waypoint
             local coord = airbase:GetCoordinate()
             if index == 1 then
                 departureAirbase = airbase
@@ -407,39 +532,72 @@ function DCAF.AIR_ROUTE:NewFromNavaids(name, idents)
                 destinationAirbase = airbase
             end
         else
-            error("DCAF.ROUTE:New :: arg[" .. Dump(index) .. "] was not type " .. DCAF.NAVAID.ClassName)
+            error("DCAF.ROUTE:New :: arg[" .. Dump(index) .. "] was not type " .. DCAF.NAVAID.ClassName .. " or " .. AIRBASE.ClassName)
         end
         waypoint[CONSTANTS.RouteProcedure] = phase
+        waypoint[CONSTANTS.RouteProcedureName] = proc
         return waypoint
     end
 
     local route = DCAF.clone(DCAF.AIR_ROUTE)
+    local firstIdent = 1
+    local spawnMethod = DCAF.AIR_ROUTE_SPAWNMETHOD.Air
+    local ignore = false
+    local lastAlt
     for i = 1, #idents, 1 do
-        local ident = idents[i]
-        if isAssignedString(ident) then
-            ident = DCAF.AIRAC.NAVAIDS[ident]
+        local sIdent = idents[i]
+        local waypoint
+        if isAssignedString(sIdent) then
+            local ident = AIRAC_IDENT:New(sIdent)
             if not ident then
-                if i == 1 or i == #idents then
-                    local airbaseName = DCAF.AIRAC.ICAO[idents[i]].Name
-                    if airbaseName then
-                        local airbase = AIRBASE:FindByName(airbaseName)
-                        if airbase then
-                            ident = airbase
+                error("Route ident #" .. Dump(i) .. " is invalid: '" .. Dump(sIdent) .. "'") end
+
+            local navaid = DCAF.AIRAC.NAVAIDS[ident.Name]
+            if not navaid then
+                if i == firstIdent or i == #idents then
+                    if DCAF.AIR_ROUTE_SPAWNMETHOD:IsAny(idents[i]) then
+                        spawnMethod = idents[i]
+                        firstIdent = firstIdent+1
+                        ignore = true
+                    else
+                        local airbaseName = DCAF.AIRAC.ICAO[idents[i]].Name
+                        if not ignore and airbaseName then
+                            local airbase = AIRBASE:FindByName(airbaseName)
+                            if airbase then
+                                waypoint = airbase
+                            end
                         end
                     end
                 end
+            elseif ident:IsRestricted() then
+                -- NAVAID in route specifies SPEED / ALT restriction; clone it and add same restrictions...
+                waypoint = DCAF.clone(navaid)
+                waypoint.AltFt = ident.AltFt
+                waypoint.SpeedKt = ident.SpeedKt
+            else
+                waypoint = navaid
             end
-            if not ident then
-                error("DCAF.ROUTE:New :: idents[" .. Dump(i) .. "] was unknown NAVAID: '" .. idents[i] .. "'")  end
+            if not ignore and not waypoint then
+                error("DCAF.ROUTE:New :: idents[" .. Dump(i) .. "] was unknown NAVAID: '" .. sIdent .. "'")  end
         end
-        if not isClass(ident, DCAF.NAVAID.ClassName) and not isClass(ident, AIRBASE.ClassName) then
-            error("DCAF.ROUTE:New :: idents[" .. Dump(i) .. "] was not type " .. DCAF.NAVAID.ClassName) end
+        if not ignore and not isClass(waypoint, DCAF.NAVAID.ClassName) and not isClass(waypoint, AIRBASE.ClassName) then
+            error("DCAF.ROUTE:New :: idents[" .. Dump(i) .. "] ('" .. Dump(sIdent) .. "') was not type " .. DCAF.NAVAID.ClassName .. " or " .. AIRBASE.ClassName) end
 
-        table.insert(route.Waypoints, makeEnrouteWaypoint(ident, i))
+        if not ignore then
+            local wp = makeRouteWaypoint(waypoint, i)
+            if not wp.alt then
+                wp.alt = lastAlt
+            end
+            lastAlt = wp.alt
+            table.insert(route.Waypoints, wp) 
+        end
+
+        ignore = false
     end
     route.Name = name
     route.DepartureAirbase = departureAirbase
     route.DestinationAirbase = destinationAirbase
+    route.Takeoff = DCAF.AIR_ROUTE_SPAWNMETHOD:ResolveMOOSETakeoff(spawnMethod)
     DCAF_ROUTE_COUNT = DCAF_ROUTE_COUNT+1
     return route
 end
@@ -453,7 +611,7 @@ function DCAF.AIR_ROUTE:CloneReversed(name)
         name = genericRouteName()
     end
     local clone = DCAF.clone(self)
-    clone.Waypoint = listReverse(self.Waypoints)
+    clone.Waypoints = listReverse(self.Waypoints)
     clone.Name = name
     DCAF_ROUTE_COUNT = DCAF_ROUTE_COUNT+1
     return clone
@@ -485,24 +643,24 @@ function DCAF.AIR_ROUTE:WithCruiseSpeed(speedKnots)
     return self 
 end
 
-local function setCruiseParameters(airRoute, cruiseSpeedKnots, cruiseAltitudeFeet)
+local function setCruiseParameters(waypoints, cruiseSpeedKnots, cruiseAltitudeFeet)
 
     local function set(wp, speedKnots, altitudeFeet)
-        if wp[CONSTANTS.RouteProcedure] == DCAF.AIR_ROUTE_PHASE.Enroute or wp.alt == 0 then
+        if wp[CONSTANTS.RouteProcedure] == DCAF.AIR_ROUTE_PHASE.Enroute or wp.alt == nil or wp.alt == 0 then
             wp.alt = Feet(altitudeFeet)
         end
-        if wp[CONSTANTS.RouteProcedure] == DCAF.AIR_ROUTE_PHASE.Enroute or wp.speed == 0 then
+        if wp[CONSTANTS.RouteProcedure] == DCAF.AIR_ROUTE_PHASE.Enroute or wp.speed == nil or wp.speed == 0 then
             wp.speed = Knots(speedKnots)
         end
     end
 
-    local firstWP = airRoute.Waypoints[1]
+    local firstWP = waypoints[1]
     set(firstWP, cruiseSpeedKnots, cruiseAltitudeFeet)
     local prevCoord = COORDINATE_FromWaypoint(firstWP)
-    for i = 2, #airRoute.Waypoints, 1 do
+    for i = 2, #waypoints, 1 do
         local altitude = cruiseAltitudeFeet or 30000
         -- local speed = cruiseSpeedKnots obsolete
-        local wp = airRoute.Waypoints[i]
+        local wp = waypoints[i]
         local coord = COORDINATE_FromWaypoint(wp)
         local heading = prevCoord:GetHeadingTo(coord)
         -- correct cruise altitude for heading...
@@ -533,8 +691,12 @@ function DCAF.AIR_ROUTE_OPTIONS:New(cruiseSpeedKt, cruiseAltitudeFt, sid, star)
     if sid ~= nil and not isBoolean(star) and not isAssignedString(star) then
         error("DCAF.AIR_ROUTE_OPTIONS:New :: `star` must be a boolean (true to auto assign STAR) or a string (name of STAR)") end
                 
-    options.CruiseSpeedKnots = cruiseSpeedKt
-    options.CruiseAltitudeFeet = cruiseAltitudeFt
+    if isNumber(cruiseSpeedKt) then
+        options.CruiseSpeedKnots = cruiseSpeedKt
+    end
+    if isNumber(cruiseAltitudeFt) then
+        options.CruiseAltitudeFeet = cruiseAltitudeFt
+    end
     if sid ~= nil then
         options.SID = sid or DCAF.AIR_ROUTE_OPTIONS.SID
     else
@@ -553,25 +715,29 @@ local function alignCoalitionWithDestination(spawn, route)
         return end
 
     local destinationCoalition = route.DestinationAirbase:GetCoalition()
+-- Debug("nisse - alignCoalitionWithDestination :: destinationCoalition: " .. Dump(destinationCoalition))
     local destinationCountry = DCAF.AIRAC.ICAO:GetCountry(route.DestinationAirbase)
-    -- local spawnCoalition = spawn:GetCoalition()
-    -- if destinationCoalition == spawnCoalition then
-    --     return end
-    
-Debug("nisse - alignCoalitionWithDestination :: sets coalition: " .. DumpPretty(destinationCoalition) .. ":: and country: " .. Dump(destinationCountry))
     spawn:InitCountry(destinationCountry)
     spawn:InitCoalition(destinationCoalition)
     return destinationCoalition
 end
 
-function DCAF.AIR_ROUTE:Fly(controllable, options) --  cruiseSpeedKmph, cruiseAltitudeMeters, sid, star)
+function DCAF.AIR_ROUTE:Fly(controllable, options)
+    if isAssignedString(controllable) then
+        local spawn = getSpawn(controllable)
+        if spawn then 
+            controllable = spawn
+        end
+    end
+
     if not isClass(controllable, GROUP.ClassName) and not isClass(controllable, SPAWN.ClassName) then
-        error("DCAF.AIR_ROUTE:Fly :: `controllable` must be type " .. GROUP.ClassName .. " or " .. SPAWN.ClassName) end
+        error("DCAF.AIR_ROUTE:Fly :: `controllable` must be string, or types: " .. GROUP.ClassName .. ", " .. SPAWN.ClassName .. " but was " .. type(controllable)) end
+        
     if #self.Waypoints == 0 then
         error("DCAF.AIR_ROUTE:Fly :: route is empty (no waypoints)") end
     
     if not isClass(options, DCAF.AIR_ROUTE_OPTIONS.ClassName) then
-        options = DCAF.AIR_ROUTE_OPTIONS:New() 
+        options = DCAF.AIR_ROUTE_OPTIONS:New()
     end
 
     local cruiseAltitudeFeet = options.CruiseAltitudeFeet or 30000
@@ -581,8 +747,7 @@ function DCAF.AIR_ROUTE:Fly(controllable, options) --  cruiseSpeedKmph, cruiseAl
     end
     local cruiseSpeedKnots = options.CruiseSpeedKnots
     if cruiseSpeedKnots == 0 then
-Debug("DCAF.AIR_ROUTE:Fly :: route.CruiseSpeedKnots: " .. Dump(route.CruiseSpeedKnots) .. " :: getGroupMaxSpeed: " .. Dump(getGroupMaxSpeed(route.Group)))   
-        cruiseSpeedKnots = Knots(route.CruiseSpeedKnots) or getGroupMaxSpeed(route.Group) * .8
+        cruiseSpeedKnots = Knots(self.CruiseSpeedKnots) or getGroupMaxSpeed(self.Group) * .8
     end
 
     -- clone AIR_ROUTE and set speeds and altitudes ...
@@ -595,16 +760,16 @@ Debug("DCAF.AIR_ROUTE:Fly :: route.CruiseSpeedKnots: " .. Dump(route.CruiseSpeed
         alignCoalitionWithDestination(controllable, route)
         -- spawn group ...
         if route.DepartureAirbase then
-            route.Group = controllable:SpawnAtAirbase(route.DepartureAirbase)
+            route.Group = controllable:SpawnAtAirbase(route.DepartureAirbase, route.Takeoff)
         else
             local firstWP = route.Waypoints[1]
             local nextWP
             local coordAirSpawn = COORDINATE_FromWaypoint(firstWP)
             if #route.Waypoints > 1 then
                 nextWP = route.Waypoints[2]
-                local coordNextWP = COORDINATE_FromWaypoint(nextWP)
+                local coordNextWP = COORDINATE_FromWaypoint(nextWP)           
                 local initialHeading = coordAirSpawn:GetHeadingTo(coordNextWP)
-Debug("DCAF.AIR_ROUTE:Fly :: initialHeading: " .. Dump(initialHeading))
+-- Debug("DCAF.AIR_ROUTE:Fly :: initialHeading: " .. Dump(initialHeading))
                 coordAirSpawn:SetHeading(initialHeading)
             end
             coordAirSpawn:SetVelocity(Knots(cruiseSpeedKnots))
@@ -612,22 +777,77 @@ Debug("DCAF.AIR_ROUTE:Fly :: initialHeading: " .. Dump(initialHeading))
             route.Group = controllable:SpawnFromCoordinate(coordAirSpawn)
         end
     end
-    setCruiseParameters(route, cruiseSpeedKnots, cruiseAltitudeFeet)
-    if options.STAR then
+    setCruiseParameters(route.Waypoints, cruiseSpeedKnots, cruiseAltitudeFeet)
+    if options.STAR and self.DestinationAirbase then
         route:SetSTAR(options.STAR)
     end
 
     -- make AI-invisible if configured for it...
     local groupCoalition = route.Group:GetCoalition()
     local country = route.Group:GetCountry()
-Debug("DCAF.AIR_ROUTE:Fly :: groupCoalition: " .. Dump(groupCoalition) .. " :: country: " .. Dump(country) .. " options.InvisibleToHostileAI: " .. DumpPretty(options.InvisibleToHostileAI))
     if options.InvisibleToHostileAI and groupCoalition ~= coalition.side.NEUTRAL then
         Trace("DCAF.AIR_ROUTE:Fly :: makes group AI invisible: " .. route.Group.GroupName)
         route.Group:SetCommandInvisible(true)
     end
     route.Group:Route(route.Waypoints)
-
     return route
+end
+
+local AIR_ROUTE_CALLBACK_INFO = {
+    ClassName = "AIR_ROUTE_CALLBACK_INFO",
+    NextId = 1,
+    Id = 0,              -- #int
+    Func = nil,          -- #function
+}
+
+local AIR_ROUTE_CALLBACKS = { -- dictionary
+    -- key   = #string
+    -- value = #AIR_ROUTE_CALLBACK_INFO
+}
+
+--- calls back a handler function when active route's group reaches last waypoint (might be useful to set parking, destroy group etc.)
+function DCAF.AIR_ROUTE:OnArrival(func)
+    if not isClass(self.Group, GROUP.ClassName) then
+        Warning("DCAF.AIR_ROUTE:OnArrival :: not an active route (no Group flying it) :: IGNORES")
+        return
+    end
+    local lastWP = self.Waypoints[2]
+    -- local lastWP = self.Waypoints[#self.Waypoints]
+    local callback
+    callback = AIR_ROUTE_CALLBACK_INFO:New(function()
+        func(self)
+        callback:Remove()
+    end)
+    InsertWaypointAction(lastWP, ScriptAction("DCAF.AIR_ROUTE:Callback(" .. Dump(callback.Id) ..")"))
+end
+
+function AIR_ROUTE_CALLBACK_INFO:New(func)
+    local info = DCAF.clone(AIR_ROUTE_CALLBACK_INFO)
+    info.Func = func
+    AIR_ROUTE_CALLBACK_INFO.NextId = AIR_ROUTE_CALLBACK_INFO.NextId + 1
+    info.Id = AIR_ROUTE_CALLBACK_INFO.NextId
+    AIR_ROUTE_CALLBACKS[tostring(info.Id)] = info
+    return info
+end
+
+function AIR_ROUTE_CALLBACK_INFO:Remove()
+    AIR_ROUTE_CALLBACKS[tostring(self.Id)] = nil
+end
+
+function DCAF.AIR_ROUTE:Callback(id)
+    local info = AIR_ROUTE_CALLBACKS[tostring(id)]
+    if not info then
+        Warning("DCAF.AIR_ROUTE:Callback :: no callback found with id: " .. Dump(id) .. " :: IGNORES")
+        return
+    end
+    info.Func()
+end
+
+--- Destroys active route (including GROUP flying it)
+function DCAF.AIR_ROUTE:Destroy()
+    if isClass(self.Group, GROUP.ClassName) then
+        self.Group:Destroy()
+    end
 end
 
 function DCAF.AIR_ROUTE:GetSTAR()
@@ -696,7 +916,7 @@ function DCAF.AIR_ROUTE:GetLength()
     return distance
 end
 
---- generates a 'generic' STAR procedure for specified airbase (just a waypoint 15nm out from active RWY)
+--- generates a 'generic' STAR procedure for specified airbase (just a waypoint 20nm out from, and aligned with, active RWY)
 function DCAF.AIR_ROUTE:GetGenericSTAR(airbase, speedKmph)
     local icao = DCAF.AIRAC.ICAO:GetAirbaseICAO(airbase)
     if not icao then
@@ -726,37 +946,156 @@ function DCAF.AIR_ROUTE:GetGenericSTAR(airbase, speedKmph)
     return DCAF.AIRAC.STAR:New(starName, { wp }) --   DCAF.AIR_ROUTE:NewFromWaypoints(starName, { wp })
 end
 
--- function DCAF.ROUTE:ExecuteFor(source)
---     local group = getGroup(source)
---     if not group then 
---         error("DCAF.ROUTE:ExecuteFor :: cannot resolve group from " .. DumpPretty(source)) end
+--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+--                                        ROUTE POPULATION (spawns traffic along a route)
+--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
---     local route = DCAF.clone(self)
---     route.Name = group.GroupName .. "::" .. route.Name
---     group:Route(route.Waypoints)
---     route.ExecutingGroup = group
+DCAF.ROUTE_SPAWN = {
+    ClassName = "DCAF.ROUTE_SPAWN",
+    Index = 0,                  -- #number - internal index of route spawn
+    Coordinate = nil,           -- #CORE.COORDINATE
+    Heading = nil,              -- #number
+    AltitudeFt = nil,           -- #number (feet)
+    Route = nil,                -- #table (route / list of waypoints)
+    Method = DCAF.AIR_ROUTE_SPAWNMETHOD.Air,
+    Airbase = nil               -- #AIRBASE
+}
 
--- Debug("DCAF.ROUTE:ExecuteFor :: lastWP: " .. DumpPrettyDeep(lastWP))    
---     return route
--- end
+function DCAF.ROUTE_SPAWN:New(index, coordinate, heading, route, method)
+    local route_spawn = DCAF.clone(DCAF.ROUTE_SPAWN)
+    route_spawn.Index = index
+    route_spawn.Coordinate = coordinate
+    route_spawn.Heading = heading
+    route_spawn.Route = listCopy(route)
+    route_spawn.Method = method or DCAF.AIR_ROUTE_SPAWNMETHOD.Air
+    return route_spawn
+end
 
--- function DCAF.ROUTE:OnCompleted(func)
---     local lastWP = self.Waypoints[#self.Waypoints]
---     if lastWP.type == "Turning Point" then
---         -- create zone and check for group entering
---         local coordLastWP = COORDINATE:New(lastWP.x, lastWP.alt, lastWP.y)
---         coord
---     elseif lastWP.type == "Land" then
---         local _onLandedFunc
---         local function onLanded(event)
--- Debug("nisse - DCAF.ROUTE:OnCompleted :: onLanded :: event: " .. DumpPrettyDeep(event))
---             MissionEvents:EndOnAircraftLanded(_onLandedFunc)
---         end
---         _onLandedFunc = onLanded
---         MissionEvents:OnAircraftLanded(_onLandedFunc)
---     end
+local ROUTE_SPAWN_TEMPLATES_CACHE = { -- dictionary
+    -- key   = #string - name of template
+    -- value = #SPAWN
+}
+
+function ROUTE_SPAWN_TEMPLATES_CACHE:Get(name)
+    local spawn = ROUTE_SPAWN_TEMPLATES_CACHE[name]
+    if spawn then 
+        return spawn end
+        
+    spawn = SPAWN:New(name)
+    ROUTE_SPAWN_TEMPLATES_CACHE[name] = spawn
+    return spawn
+end
+
+function DCAF.ROUTE_SPAWN:Spawn(spawn, options)
+    if isAssignedString(spawn) then
+        spawn = ROUTE_SPAWN_TEMPLATES_CACHE:Get(spawn)
+    elseif not isClass(spawn, SPAWN.ClassName) then
+        error("DCAF.ROUTE_SPAWN:SpawnFrom :: `spawn` must be type " .. SPAWN.ClassName)
+    end
+    if not isClass(options, DCAF.AIR_ROUTE_OPTIONS.ClassName) then
+        options = DCAF.AIR_ROUTE_OPTIONS:New() 
+    end
+
+    spawn:InitGroupHeading(self.Heading)
+    local group
+    if self.Method == DCAF.AIR_ROUTE_SPAWNMETHOD.Air then
+        group = spawn:SpawnFromCoordinate(self.Coordinate)
+    else
+        group = spawn:SpawnAtAirbase(self.Airbase, self.Method:ResolveMOOSETakeoff())
+    end
+    group:Route(self.Route)
+end
+
+function DCAF.AIR_ROUTE:Populate(separationNm, spawnFunc, options)
+    if not isClass(options, DCAF.AIR_ROUTE_OPTIONS.ClassName) then
+        options = DCAF.AIR_ROUTE_OPTIONS:New() 
+    end
+
+    if separationNm == nil then
+        separationNm = VariableValue:New(NauticalMiles(40), 40)
+    elseif isNumber(separationNm) then
+        separationNm = VariableValue:New(separationNm)
+    elseif not isClass(separationNm, VariableValue.ClassName) then
+        error("getDistributedRouteSpawns :: `separation` must be type " .. VariableValue.ClassName) 
+    end
+
+    if isNumber(maxCount) then
+        maxCount = math.max(1, maxCount)
+    end
+
+    local route_spawns = {}
+    if #self.Waypoints < 2 then
+        return route_spawns end
+
+    local waypoints = listCopy(self.Waypoints) -- clone the list of waypoints (we will affect it)
+    setCruiseParameters(waypoints, options.CruiseSpeedKnots, options.CruiseAltitudeFeet)
+
+-- Debug("nisse - DCAF.AIR_ROUTE:Populate :: waypoints: " .. DumpPrettyDeep(waypoints))
     
--- end
+    local prevWP = waypoints[1]
+    local coordPrevWP = COORDINATE_FromWaypoint(prevWP)
+    local nextWP = waypoints[2]
+    local coordNextWP = COORDINATE_FromWaypoint(nextWP)
+    local heading = coordPrevWP:GetHeadingTo(coordNextWP)
+    local altitude
+    local count = 1
+
+    local function next()
+        if isNumber(maxCount) and count == maxCount then
+            return end
+        
+        local sep = separationNm:GetValue()
+        local distance = coordPrevWP:Get2DDistance(coordNextWP)
+        local effectiveSeparation = sep
+        local diff = sep - distance
+        while distance < effectiveSeparation do
+            -- remove 1st waypoint from route and recalculate initial WP...
+            effectiveSeparation = effectiveSeparation - distance
+            coordPrevWP = coordNextWP
+            local length
+            prevWP = waypoints[1]
+            waypoints, length = listCopy(waypoints, {}, 2)
+            if length == 0 then
+                return end -- we're done; terminate 
+            
+            nextWP = waypoints[1]
+            coordNextWP = COORDINATE:New(nextWP.x, nextWP.alt, nextWP.y)
+            heading = coordPrevWP:GetAngleDegrees(coordPrevWP:GetDirectionVec3(coordNextWP))
+            distance = coordPrevWP:Get2DDistance(coordNextWP)
+        end
+
+        if prevWP.alt == nextWP.alt then
+            altitude = nextWP.alt
+        else
+            local maxAlt = math.max(prevWP.alt, nextWP.alt)
+            local minAlt = math.min(prevWP.alt, nextWP.alt)
+            local diff = maxAlt - minAlt
+            local factor = effectiveSeparation / distance
+            if prevWP.alt > nextWP.alt then
+                -- descending
+                factor = 1 - factor 
+            end
+            altitude = minAlt + (diff * factor)
+        end
+        count = count + 1
+        return coordPrevWP:Translate(effectiveSeparation, heading)
+    end
+    
+    local count = 1
+    coordPrevWP = next()
+    while coordPrevWP do
+        coordPrevWP:SetAltitude(altitude)
+        local rs = DCAF.ROUTE_SPAWN:New(count, coordPrevWP, heading, waypoints)
+        local spawn = spawnFunc(rs)
+        if isClass(spawn, SPAWN.ClassName) then
+            -- function provided a SPAWN (rather than spawning a group)...
+            alignCoalitionWithDestination(spawn, self)
+            rs:Spawn(spawn)
+        end
+        coordPrevWP = next()
+        count = count+1
+    end    
+end
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 --                                                   PROCEDURES (SID/STAR)
@@ -834,6 +1173,15 @@ addAIRACAerodromes(
             :WithTWR({ 251.05, 119.40 })
             :WithDEP({ 251.60, 119.60 })
             :WithTACAN(121)
+            :WithVoice(ATIS.Culture.Random, ATIS.Gender.Random),
+
+    AIRAC_Aerodrome:New(AIRBASE.PersianGulf.Sharjah_Intl, 'OMSJ')
+            :WithATIS( 375.60 ) -- ??
+            :WithGND({ 250.05, 118.05 })
+            :WithTWR({ 250.30, 118.70 })
+            :WithDEP({ 250.60, 118.60 })
+            :WithILS({ 
+                ["12L"] = 108.55, ["30R"] = 111.95 })
             :WithVoice(ATIS.Culture.Random, ATIS.Gender.Random),
 
     AIRAC_Aerodrome:New(AIRBASE.PersianGulf.Khasab, 'OOKB')
