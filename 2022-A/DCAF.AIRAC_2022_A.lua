@@ -110,7 +110,7 @@ local CONSTANTS = {
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DCAF.NAVAID_TYPE = {
-    Waypoint = "Waypoint",
+    Fix = "Fix",
     VOR = "VOR",
     DME = "DME",
     TACAN = "TACAN",
@@ -122,14 +122,14 @@ DCAF.NAVAID = {
     Name = nil,                 -- #string - name of NAVAID
     Coordinate = nil,           -- #MOOSE/COORDINATE
     Map = nil,                  -- #string (see MOOSE/DCSMAP)
-    Type = DCAF.NAVAID_TYPE.Waypoint
+    Type = DCAF.NAVAID_TYPE.Fix
 }
 
 function DCAF.NAVAID_TYPE:IsValid(type)
     return type == DCAF.NAVAID_TYPE.VOR
         or type == DCAF.NAVAID_TYPE.DME
         or type == DCAF.NAVAID_TYPE.TACAN
-        or type == DCAF.NAVAID_TYPE.Waypoint
+        or type == DCAF.NAVAID_TYPE.Fix
 end
 
 function DCSMAP:IsValid(map)
@@ -155,7 +155,7 @@ function DCAF.NAVAID:New(map, name, coordinate, type)
         if not DCAF.NAVAID_TYPE:IsValid(type) then
             error("DCAF.NAVAID:New :: invalid `type`: " .. DumpPretty(type)) end
     else
-        type = DCAF.NAVAID_TYPE.Waypoint
+        type = DCAF.NAVAID_TYPE.Fix
     end
     
     local navaid = DCAF.clone(DCAF.NAVAID)
@@ -166,8 +166,8 @@ function DCAF.NAVAID:New(map, name, coordinate, type)
     return navaid
 end
 
-function DCAF.NAVAID:NewWaypoint(map, name, coordinate)
-    return DCAF.NAVAID:New(map, name, coordinate, DCAF.NAVAID_TYPE.Waypoint)
+function DCAF.NAVAID:NewFix(map, name, coordinate)
+    return DCAF.NAVAID:New(map, name, coordinate, DCAF.NAVAID_TYPE.Fix)
 end
 
 function DCAF.NAVAID:NewVOR(map, name, frequency, coordinate)
@@ -205,7 +205,7 @@ function DCAF.NAVAID:NewTACAN(map, name, channel, mode, coordinate)
 end
 
 function DCAF.NAVAID:IsEmitter()
-    return self.Type ~= DCAF.NAVAID_TYPE.Waypoint
+    return self.Type ~= DCAF.NAVAID_TYPE.Fix
 end
 
 function DCAF.NAVAID:NewVORTAC(map, name, frequency, channel, mode, coordinate)
@@ -282,14 +282,18 @@ end
 
 DCAF.AIRAC.NAVAIDS = {
     -- Persian Gulf (PEG) - Waypoints
-    ULDUR = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ULDUR", COORDINATE:NewFromLLDD(31.34194444, 47.11500000)),
-    RETEL = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "RETEL", COORDINATE:NewFromLLDD(29.03555556, 48.64222222)),
-    ROTEL = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ROTEL", COORDINATE:NewFromLLDD(26.83888889, 50.69611111)),
-    TUMAK = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "TUMAK", COORDINATE:NewFromLLDD(26.00083333, 52.78694444)),
-    ALSAS = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "ALSAS", COORDINATE:NewFromLLDD(24.01500000, 59.33194444)),
-    DESPI = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "DESPI", COORDINATE:NewFromLLDD(23.83083333, 56.51944444)),
-    PUTSO = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "PUTSO", COORDINATE:NewFromLLDD(23.34361100, 56.88944400)),
-    PARAR = DCAF.NAVAID:NewWaypoint(DCSMAP.PersianGulf, "PARAR", COORDINATE:NewFromLLDD(22.82555556, 63.75138889)),
+    ALSAS = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "ALSAS", COORDINATE:NewFromLLDD(24.01500000, 59.33194444)),
+    DESPI = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "DESPI", COORDINATE:NewFromLLDD(23.83083333, 56.51944444)),
+    ELOVU = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "ELOVU", COORDINATE:NewFromLLDD(24.95583333, 54.33805556)),
+    ORSAR = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "ORSAR", COORDINATE:NewFromLLDD(26.07500000, 53.95833333)),
+    PUTSO = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "PUTSO", COORDINATE:NewFromLLDD(23.34361100, 56.88944400)),
+    PARAR = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "PARAR", COORDINATE:NewFromLLDD(22.82555556, 63.75138889)),
+    RETEL = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "RETEL", COORDINATE:NewFromLLDD(29.03555556, 48.64222222)),
+    ROTEL = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "ROTEL", COORDINATE:NewFromLLDD(26.83888889, 50.69611111)),
+    TUMAK = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "TUMAK", COORDINATE:NewFromLLDD(26.00083333, 52.78694444)),
+    TOTKU = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "TOTKU", COORDINATE:NewFromLLDD(25.59277778, 54.06944444)),
+    ULDUR = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "ULDUR", COORDINATE:NewFromLLDD(31.34194444, 47.11500000)),
+    VUTEB = DCAF.NAVAID:NewFix(DCSMAP.PersianGulf, "VUTEB", COORDINATE:NewFromLLDD(25.61250000, 54.86361111)),
     -- Persian Gulf (PEG) - VOR/DME)
     ADV = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "ADV", 114.25, COORDINATE:NewFromLLDD(24.44166667, 54.65611111)),  -- UAE, Abu Dhabi Intl. airport
     AJR = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "AJR", 114.90, COORDINATE:NewFromLLDD(30.74694444, 49.66638889)),  -- Iran, Aghajari Airport (north, bordering Iraq)
@@ -320,11 +324,11 @@ DCAF.AIRAC.NAVAIDS = {
     SYZ1 = DCAF.NAVAID:NewTACAN( DCSMAP.PersianGulf, "SYZ1",         94, 'X', COORDINATE:NewFromLLDD(29.54166667, 52.58861111)),    -- Iran, Shiraz Intl
 
     -- Nevada Test and Training Range (NTR) - Waypoints
-    BESSY = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "BESSY", COORDINATE:NewFromLLDD(36.17694444, -115.34611111)),
-    HRRLY = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "HRRLY", COORDINATE:NewFromLLDD(35.98944444, -115.34694444)),
-    JOHKR = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "JOHKR", COORDINATE:NewFromLLDD(35.89527778, -115.93833333)),
-    KWYYN = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "KWYYN", COORDINATE:NewFromLLDD(35.86527778, -115.40666667)),
-    RAWKK = DCAF.NAVAID:NewWaypoint(DCSMAP.NTTR, "RAWKK", COORDINATE:NewFromLLDD(35.87388889, -115.55694444)),
+    BESSY = DCAF.NAVAID:NewFix(DCSMAP.NTTR, "BESSY", COORDINATE:NewFromLLDD(36.17694444, -115.34611111)),
+    HRRLY = DCAF.NAVAID:NewFix(DCSMAP.NTTR, "HRRLY", COORDINATE:NewFromLLDD(35.98944444, -115.34694444)),
+    JOHKR = DCAF.NAVAID:NewFix(DCSMAP.NTTR, "JOHKR", COORDINATE:NewFromLLDD(35.89527778, -115.93833333)),
+    KWYYN = DCAF.NAVAID:NewFix(DCSMAP.NTTR, "KWYYN", COORDINATE:NewFromLLDD(35.86527778, -115.40666667)),
+    RAWKK = DCAF.NAVAID:NewFix(DCSMAP.NTTR, "RAWKK", COORDINATE:NewFromLLDD(35.87388889, -115.55694444)),
 
 --[[
     ??? = DCAF.NAVAID:NewVOR(DCSMAP.PersianGulf, "???", ???.??, COORDINATE:NewFromLLDD(XXX, YYY)),
@@ -354,8 +358,16 @@ DCAF.AIR_ROUTE_OPTIONS = {
     CruiseSpeedKnots = 400,
     CruiseAltitudeFeet = 30000,
     SID = true,                        -- #string or #boolean - when set; a SID procedure is inserted into route. Use #string to specify SID or #boolean to auto-select a SID
-    STAR = true                        -- #string or #boolean - when set; a STAR procedure is inserted into route. Use #string to specify STAR or #boolean to auto-select a STAR
+    STAR = true,                       -- #string or #boolean - when set; a STAR procedure is inserted into route. Use #string to specify STAR or #boolean to auto-select a STAR
+    OnArrivalFunc = nil                -- #function 
 }
+
+function DCAF.AIR_ROUTE_OPTIONS:OnArrival(func)
+    if not isFunction(func) then
+        error("DCAF.AIR_ROUTE_OPTIONS:OnArrival :: `func` must be functon, but was " .. type(func)) end
+
+    self.OnArrivalFunc = func
+end
 
 DCAF.AIR_ROUTE_PHASE = {
     Takeoff = "Takeoff",
@@ -385,7 +397,9 @@ function DCAF.AIR_ROUTE:New(name, route, phase, proc)
     for ident in route:gmatch("%S+") do 
         table.insert(idents, ident) 
     end
-    return DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
+    local airRoute = DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
+    airRoute.RouteText = route
+    return airRoute
 end
 
 function DCAF.AIR_ROUTE:NewFromWaypoints(name, waypoints)
@@ -502,7 +516,7 @@ function AIRAC_IDENT:IsRestricted()
 end
 
 function DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
--- Debug("nisse - idents: " .. DumpPretty(idents))
+-- Debug("nisse - DCAF.AIR_ROUTE:NewFromNavaids :: idents: " .. DumpPretty(idents))
 
     if not isAssignedString(name) then
         name = genericRouteName()
@@ -553,6 +567,7 @@ function DCAF.AIR_ROUTE:NewFromNavaids(name, idents, phase, proc)
                 error("Route ident #" .. Dump(i) .. " is invalid: '" .. Dump(sIdent) .. "'") end
 
             local navaid = DCAF.AIRAC.NAVAIDS[ident.Name]
+Debug("nisse - DCAF.AIR_ROUTE:NewFromNavaids :: ident.Name: " .. ident.Name .. " :: navaid: " .. DumpPrettyDeep(navaid))
             if not navaid then
                 if i == firstIdent or i == #idents then
                     if DCAF.AIR_ROUTE_SPAWNMETHOD:IsAny(idents[i]) then
@@ -805,20 +820,40 @@ local AIR_ROUTE_CALLBACKS = { -- dictionary
     -- value = #AIR_ROUTE_CALLBACK_INFO
 }
 
---- calls back a handler function when active route's group reaches last waypoint (might be useful to set parking, destroy group etc.)
-function DCAF.AIR_ROUTE:OnArrival(func)
-    if not isClass(self.Group, GROUP.ClassName) then
-        Warning("DCAF.AIR_ROUTE:OnArrival :: not an active route (no Group flying it) :: IGNORES")
-        return
-    end
-    local lastWP = self.Waypoints[2]
-    -- local lastWP = self.Waypoints[#self.Waypoints]
+local function onRouteArrival(route, func)
+    local waypoints
+    if isClass(route, DCAF.AIR_ROUTE.ClassName) then
+        waypoints = route.Waypoints
+    elseif isTable(route) then
+        waypoints = route
+    else
+        error("onRouteArrival :: `route` must be table or " .. DCAF.AIR_ROUTE.ClassName) end
+
+    -- local lastWP = self.Waypoints[2]
+    local lastWP = self.Waypoints[#self.Waypoints]
     local callback
     callback = AIR_ROUTE_CALLBACK_INFO:New(function()
         func(self)
         callback:Remove()
     end)
     InsertWaypointAction(lastWP, ScriptAction("DCAF.AIR_ROUTE:Callback(" .. Dump(callback.Id) ..")"))
+end
+
+--- calls back a handler function when active route's group reaches last waypoint (might be useful to set parking, destroy group etc.)
+function DCAF.AIR_ROUTE:OnArrival(func)
+    if not isClass(self.Group, GROUP.ClassName) then
+        Warning("DCAF.AIR_ROUTE:OnArrival :: not an active route (no Group flying it) :: IGNORES")
+        return
+    end
+    onRouteArrival(self, func)
+    -- local lastWP = self.Waypoints[#self.Waypoints]
+    -- local callback
+    -- callback = AIR_ROUTE_CALLBACK_INFO:New(function()
+    --     func(self)
+    --     callback:Remove()
+    -- end)
+    -- InsertWaypointAction(lastWP, ScriptAction("DCAF.AIR_ROUTE:Callback(" .. Dump(callback.Id) ..")"))
+    return self
 end
 
 function AIR_ROUTE_CALLBACK_INFO:New(func)
@@ -1004,6 +1039,12 @@ function DCAF.ROUTE_SPAWN:Spawn(spawn, options)
         group = spawn:SpawnAtAirbase(self.Airbase, self.Method:ResolveMOOSETakeoff())
     end
     group:Route(self.Route)
+    return self
+end
+
+function DCAF.ROUTE_SPAWN:OnArrival(func)
+    onRouteArrival(self.Route, func)
+    return self
 end
 
 function DCAF.AIR_ROUTE:Populate(separationNm, spawnFunc, options)
@@ -1011,10 +1052,12 @@ function DCAF.AIR_ROUTE:Populate(separationNm, spawnFunc, options)
         options = DCAF.AIR_ROUTE_OPTIONS:New() 
     end
 
+Debug("nisse - DCAF.AIR_ROUTE:Populate :: separationNm: " .. Dump(separationNm) .. " :: isNumber(separationNm): " .. Dump(isNumber(separationNm)))
+
     if separationNm == nil then
-        separationNm = VariableValue:New(NauticalMiles(40), 40)
+        separationNm = VariableValue:New(NauticalMiles(80), .4)
     elseif isNumber(separationNm) then
-        separationNm = VariableValue:New(separationNm)
+        separationNm = VariableValue:New(NauticalMiles(separationNm))
     elseif not isClass(separationNm, VariableValue.ClassName) then
         error("getDistributedRouteSpawns :: `separation` must be type " .. VariableValue.ClassName) 
     end
@@ -1086,7 +1129,14 @@ function DCAF.AIR_ROUTE:Populate(separationNm, spawnFunc, options)
     while coordPrevWP do
         coordPrevWP:SetAltitude(altitude)
         local rs = DCAF.ROUTE_SPAWN:New(count, coordPrevWP, heading, waypoints)
+        if isFunction(options.OnArrivalFunc) then
+            rs:OnArrival(options.OnArrivalFunc)
+        end
         local spawn = spawnFunc(rs)
+        if isAssignedString(spawn) then
+            -- function provided a template name; get a SPAWN...
+            spawn = getSpawn(spawn)
+        end
         if isClass(spawn, SPAWN.ClassName) then
             -- function provided a SPAWN (rather than spawning a group)...
             alignCoalitionWithDestination(spawn, self)
@@ -1095,6 +1145,8 @@ function DCAF.AIR_ROUTE:Populate(separationNm, spawnFunc, options)
         coordPrevWP = next()
         count = count+1
     end    
+
+    return self
 end
 
 --////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
