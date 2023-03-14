@@ -111,7 +111,7 @@ local function launchMagic2()
          awacs:SpawnReplacement(SpawnDelay()) -- comment this line if you do NOT want to launch a replacement tanker when this one reaches 40% fuel          
       end)
       :OnFuelState(0.17, function(awacs)  
-         awacs:RTB():DespawnOnLanding(DespawnDelay)
+         awacs:RTB()--:DespawnOnLanding(DespawnDelay)
       end) 
       :Start()
 end
@@ -125,7 +125,7 @@ DCAF.Tanker:NewFromCallsign(CALLSIGN.Tanker.Shell, 1)
             launchShell2()  -- comment this line if you do NOT want to launch 2nd tanker (SHELL-2) once SHELL-1 reaches 40% fuel
          end)
          :OnFuelState(0.17, function(tanker)    -- makes tanker RTB, to original airbase, when when fuel reaches 17%
-            tanker:RTB():DespawnOnLanding(DespawnDelay)
+            tanker:RTB()--:DespawnOnLanding(DespawnDelay)
             tanker:SpawnReplacement(SpawnDelay()) -- comment this line if you do NOT want to always have a SHELL-1 tanker working the track
          end) 
          :Start(SpawnDelay)
@@ -137,7 +137,7 @@ DCAF.Tanker:NewFromCallsign(CALLSIGN.Tanker.Texaco, 1)
             launchTexaco2() --  comment this line if you do NOT want to launch 2nd tanker (TEXACO-2) once TEXACO-1 reaches 40% fuel
          end)
          :OnFuelState(0.17, function(tanker)  -- makes tanker RTB, to original airbase, when when fuel reaches 17%
-            tanker:RTB():DespawnOnLanding(DespawnDelay)
+            tanker:RTB()--:DespawnOnLanding(DespawnDelay)
             tanker:SpawnReplacement(SpawnDelay)   -- comment this line if you do NOT want to always have a TEXACO-1 tanker working the track
          end) 
          :Start(SpawnDelay)
@@ -150,7 +150,7 @@ DCAF.AWACS:NewFromCallsign(CALLSIGN.AWACS.Magic, 1)
             launchMagic2() -- >>SECOND WAVE<< comment this line if you do NOT want continous AWACS coverage
          end)
          :OnFuelState(0.17, function(awacs)     -- makes tanker RTB, to orifinal airbase, when when fuel reaches 17%
-            awacs:RTB(AIRBASE.Syria.Incirlik):DespawnOnLanding(DespawnDelay)
+            awacs:RTB(AIRBASE.Syria.Incirlik)--:DespawnOnLanding(DespawnDelay)
          end) 
          :Start()
 
